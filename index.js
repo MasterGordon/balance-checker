@@ -15,15 +15,14 @@ app.post("/", async (req, res) => {
     const provider = new JsonRpcProvider(rpc);
     const balance = await provider.getBalance(address);
     if (balance < BigInt(limit * factor)) {
-      res.send("below limit");
       res.status(400);
+      res.send("below limit");
     } else res.send("ok");
     res.end();
   } catch (e) {
     console.log(e);
-    res.send("failed to check balance");
     res.status(500);
-    res.end();
+    res.send("failed to check balance");
   }
 });
 app.post("/balance", async (req, res) => {
@@ -31,14 +30,13 @@ app.post("/balance", async (req, res) => {
     const { address, rpc } = req.body;
     const provider = new JsonRpcProvider(rpc);
     const balance = await provider.getBalance(address);
+    res.status(200);
     res.send(formatEther(balance));
-    res.status(400);
     res.end();
   } catch (e) {
     console.log(e);
-    res.send("failed to check balance");
     res.status(500);
-    res.end();
+    res.send("failed to check balance");
   }
 });
 
