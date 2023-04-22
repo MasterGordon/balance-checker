@@ -1,6 +1,7 @@
+// @ts-check
 import express from "express";
 import bodyParser from "body-parser";
-import { JsonRpcProvider } from "ethers";
+import { JsonRpcProvider, formatEther } from "ethers";
 
 const app = express();
 
@@ -25,5 +26,20 @@ app.post("/", async (req, res) => {
     res.end();
   }
 });
+app.post("/balance", async (req, res) => {
+  try {
+    const { address, rpc } = req.body;
+    const provider = new JsonRpcProvider(rpc);
+    const balance = await provider.getBalance(address);
+    res.send(formatEther(balance));
+    res.status(400);
+    res.end();
+  } catch (e) {
+    console.log(e);
+    res.send("failed to check balance");
+    res.status(500);
+    res.end();
+  }
+});
 
-app.listen(3043);
+app.listen(3043, "0.0.0.0");
